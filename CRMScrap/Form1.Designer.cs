@@ -28,12 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             label1 = new Label();
             Username_TextBox = new TextBox();
             Password_TextBox = new TextBox();
             label2 = new Label();
             Login_BTN = new Button();
             SuspendLayout();
+            // 
+            // Username_TextBox
+            // 
+            Username_TextBox.Font = new Font("Segoe UI Semibold", 15F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            Username_TextBox.Location = new Point(150, 36);
+            Username_TextBox.Name = "Username_TextBox";
+            Username_TextBox.Size = new Size(294, 34);
+            Username_TextBox.TabIndex = 0;
+            Username_TextBox.TextChanged += TxtBoxChanged;
+            // 
+            // Password_TextBox
+            // 
+            Password_TextBox.Font = new Font("Segoe UI Semibold", 15F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            Password_TextBox.Location = new Point(150, 110);
+            Password_TextBox.Name = "Password_TextBox";
+            Password_TextBox.Size = new Size(294, 34);
+            Password_TextBox.TabIndex = 1;
+            Password_TextBox.UseSystemPasswordChar = true;
+            Password_TextBox.TextChanged += TxtBoxChanged;
             // 
             // label1
             // 
@@ -44,28 +64,8 @@
             label1.Location = new Point(12, 44);
             label1.Name = "label1";
             label1.Size = new Size(112, 26);
-            label1.TabIndex = 1;
+            label1.TabIndex = 3;
             label1.Text = "Username";
-            label1.Click += LoginButton;
-            // 
-            // Username_TextBox
-            // 
-            Username_TextBox.Font = new Font("Segoe UI Semibold", 15F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
-            Username_TextBox.Location = new Point(150, 36);
-            Username_TextBox.Name = "Username_TextBox";
-            Username_TextBox.Size = new Size(294, 34);
-            Username_TextBox.TabIndex = 2;
-            Username_TextBox.TextChanged += TxtBoxChanged;
-            // 
-            // Password_TextBox
-            // 
-            Password_TextBox.Font = new Font("Segoe UI Semibold", 15F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
-            Password_TextBox.Location = new Point(150, 110);
-            Password_TextBox.Name = "Password_TextBox";
-            Password_TextBox.Size = new Size(294, 34);
-            Password_TextBox.TabIndex = 4;
-            Password_TextBox.UseSystemPasswordChar = true;
-            Password_TextBox.TextChanged += TxtBoxChanged;
             // 
             // label2
             // 
@@ -75,9 +75,8 @@
             label2.Location = new Point(12, 118);
             label2.Name = "label2";
             label2.Size = new Size(109, 26);
-            label2.TabIndex = 3;
+            label2.TabIndex = 4;
             label2.Text = "Password";
-            label2.Click += LoginButton;
             // 
             // Login_BTN
             // 
@@ -104,10 +103,10 @@
             Controls.Add(label2);
             Controls.Add(Username_TextBox);
             Controls.Add(label1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
             Text = "CRMScrap";
             FormClosed += CloseForm;
-            Load += Form1_Load;
             ResumeLayout(false);
             PerformLayout();
         }

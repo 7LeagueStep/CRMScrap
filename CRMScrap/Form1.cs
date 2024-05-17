@@ -46,7 +46,7 @@ namespace CRMScrap
             OpenSelenium();
             Thread.Sleep(3000);
             Login(Username_TextBox.Text, Password_TextBox.Text);
-            CloseSelenium();
+            //CloseSelenium();
             Login_BTN.ForeColor = Color.Lime;
             Login_BTN.UseWaitCursor = false;
             Login_BTN.Text = "Login";
@@ -59,7 +59,7 @@ namespace CRMScrap
             try
             {
                 _driver.FindElements(By.XPath("//*[@id=\"username\"]"))[0].SendKeys(username); Thread.Sleep(3000);
-                _driver.FindElements(By.XPath("//*[@id=\"current-password\"]"))[1].SendKeys(password); Thread.Sleep(3000);
+                _driver.FindElements(By.XPath("/html/body/div[2]/div/div/div/div[1]/div[2]/div/form/div[2]/input"))[0].SendKeys(password); Thread.Sleep(2000);
                 _driver.FindElement(By.XPath("//*[@id=\"login\"]/div[3]/button")).Click(); Thread.Sleep(1000);
             }
             catch (Exception ex)
@@ -84,11 +84,6 @@ namespace CRMScrap
         private void CloseSelenium()
         {
             _driver.Quit();
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }
