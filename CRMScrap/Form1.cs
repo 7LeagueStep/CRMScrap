@@ -1,4 +1,4 @@
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
 namespace CRMScrap
@@ -9,7 +9,7 @@ namespace CRMScrap
         private Thread _thread;
         //private WebScrap _scrap;
         //private bool _isLoggedIn = false;
-        
+
         public Form1()
         {
             InitializeComponent();
@@ -46,13 +46,13 @@ namespace CRMScrap
             Login_BTN.Text = "Testing...";
             OpenSelenium(); Thread.Sleep(3000);
             Login(Username_TextBox.Text, Password_TextBox.Text); Thread.Sleep(100);
-            ScrapInfoOnImovelTable();
+            ScrapInfoOnImmovelTable();
             //CloseSelenium();
             Login_BTN.ForeColor = Color.Lime;
             Login_BTN.UseWaitCursor = false;
             Login_BTN.Text = "Login";
         }
-        
+
         private void OpenSelenium()
         {
             ChromeDriverService service = ChromeDriverService.CreateDefaultService();
@@ -68,38 +68,36 @@ namespace CRMScrap
                 _driver.FindElements(By.XPath("//*[@id=\"username\"]"))[0].SendKeys(username); Thread.Sleep(3000);
                 _driver.FindElements(By.XPath("/html/body/div[2]/div/div/div/div[1]/div[2]/div/form/div[2]/input"))[0].SendKeys(password); Thread.Sleep(2000);
                 _driver.FindElement(By.XPath("//*[@id=\"login\"]/div[3]/button")).Click(); Thread.Sleep(1000);
-                
-                // if (_driver.FindElements(By.XPath("//element_after_login")).Count > 0)
-                // {
-                //     _isLoggedIn = true;
-                // }   
-                
-                _driver.Navigate().GoToUrl("https://app.imo360crm.pt/listagem/imoveis"); Thread.Sleep(1000);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
-        
-        private void ScrapInfoOnImovelTable()
-        { 
+        private void ScrapInfoOnImmovelTable()
+        {
             var items = AllParameters();
-            //_driver.Navigate().GoToUrl("https://app.imo360crm.pt/listagem/imoveis"); Thread.Sleep(1000);        
-            // Find elements that contain the product details
-            IReadOnlyCollection<IWebElement> productElements = _driver.FindElements(By.XPath("//*[@id=\"customtable\"]"));
 
-            // Loop through the product elements and extract the desired information
-            foreach (IWebElement productElement in productElements)
+            _driver.Navigate().GoToUrl("https://app.imo360crm.pt/listagem/imoveis"); Thread.Sleep(1000);
+
+            var homesTable = _driver.FindElement(By.XPath("//*[@id=\"customtable\"]/div/div[2]/div")).FindElement(By.TagName("tbody"));
+            var rows = homesTable.FindElements(By.TagName("tr"));
+
+            foreach (var row in rows)
             {
-                string url = productElement.FindElement(By.XPath("//*[@id=\"tech-companies-1-clone\"]/tbody/tr[1]/td[1]")).Text;
-                string reference = productElement.FindElement(By.XPath("//*[@id=\"tech-companies-1-clone\"]/tbody/tr[1]/td[1]")).Text;
+                var webElement = row.FindElement(By.XPath("./td[1]/a"));
+                var url = webElement.GetAttribute("href");
+                var reference = webElement.GetAttribute("text");
 
-                // Add the item details to the list
                 items.Add(new string[] { url, reference });
             }
+
+            foreach (var item in items)
+            {
+                Console.WriteLine($"URL: {item[0]}, Reference: {item[1]}");
+            }
         }
-    
+
         private static List<string[]> AllParameters()
         {
             return new List<string[]>();
@@ -112,6 +110,39 @@ namespace CRMScrap
         private void CloseSelenium()
         {
             _driver.Quit();
+        }
+
+        public class RealEstateProperties
+        {
+            public string Reference { get; set; }
+            public string Nature { get; set; }
+            public string Condition { get; set; }
+            public string Typologi { get; set; }
+            public string EnergiCertification { get; set; }
+            public string YearConstraction { get; set; }
+            public string Business { get; set; }
+            public string Price { get; set; }
+            public string Avaibility { get; set; }
+            public string ContractNumber { get; set; }
+            public string DateStart { get; set; }
+            public string DateEnd { get; set; }
+            public string CommisionAgenci { get; set; }
+            public string Exlusiv { get; set; }
+            public string AreaU { get; set; }
+            public string AreaB { get; set; }
+            public string AreaT { get; set; }
+            public string Latitude { get; set; }
+            public string Longitude { get; set; }
+            public string Address { get; set; }
+            public string DoorNumber { get; set; }
+            public string Floor { get; set; }
+            public string ZipCode { get; set; }
+            public string Location { get; set; }
+            public string State { get; set; }
+            public string Town { get; set; }
+            public string Neighborhood { get; set; }
+            public string Description { get; set; }
+            public List<string> Features { get; set; }
         }
     }
 }
