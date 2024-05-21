@@ -1,7 +1,7 @@
 ﻿using CsvHelper;
 using System.Globalization;
 
-namespace CRMScrap.Services
+namespace CRMScrap.Services.CSV
 {
     public class CSVHelper : ICsvExporter
     {

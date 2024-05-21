@@ -1,6 +1,7 @@
-﻿using CRMScrap.Services;
+﻿using CRMScrap.Services.CSV;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 
 namespace CRMScrap
 {
@@ -73,27 +74,96 @@ namespace CRMScrap
                 MessageBox.Show(ex.Message);
             }
         }
+
         private void ScrapInfoOnImmovelTable()
         {
             var items = AllParameters();
+            bool hasNextPage = true;
+            int retryCount = 0;
+            const int maxRetries = 5;
 
-            _driver.Navigate().GoToUrl("https://app.imo360crm.pt/listagem/imoveis"); Thread.Sleep(1000);
+            _driver.Navigate().GoToUrl("https://app.imo360crm.pt/listagem/imoveis");
 
-            var homesTable = _driver.FindElement(By.XPath("//*[@id=\"customtable\"]/div/div[2]/div")).FindElement(By.TagName("tbody"));
-            var rows = homesTable.FindElements(By.TagName("tr"));
-
-            foreach (var row in rows)
+            while (hasNextPage)
             {
-                var webElement = row.FindElement(By.XPath("./td[1]/a"));
-                var url = webElement.GetAttribute("href");
-                var reference = webElement.GetAttribute("text");
+                try
+                {
+                    // Use WebDriverWait to wait until the table is loaded
+                    var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+                    wait.Until(drv => drv.FindElement(By.XPath("//*[@id=\"customtable\"]/div/div[2]/div")).FindElement(By.TagName("tbody")));
 
-                items.Add(new string[] { url, reference });
+                    var homesTable = _driver.FindElement(By.XPath("//*[@id=\"customtable\"]/div/div[2]/div")).FindElement(By.TagName("tbody"));
+                    var rows = homesTable.FindElements(By.TagName("tr"));
+
+                    foreach (var row in rows)
+                    {
+                        var webElement = row.FindElement(By.XPath("./td[1]/a"));
+                        var url = webElement.GetAttribute("href");
+                        var reference = webElement.GetAttribute("text");
+
+                        items.Add(new string[] { url, reference });
+                    }
+
+                    // Check if the next page button is disabled
+                    try
+                    {
+                        _driver.FindElement(By.XPath("//li[@class='page-item disabled' and @aria-disabled='true' and @aria-label='Próximo »']"));
+                        hasNextPage = false; // If the element is found, it means we are on the last page
+                    }
+                    catch (NoSuchElementException)
+                    {
+                        // If the element is not found, click the next page button
+                        var nextButton = _driver.FindElement(By.XPath("//li[@class='page-item']//a[@aria-label='Próximo »']"));
+                        nextButton.Click();
+
+                        // Reset retry count after successful navigation
+                        retryCount = 0;
+
+                        // Wait for the next page to load
+                        Thread.Sleep(1000);
+                    }
+                }
+                catch (WebDriverTimeoutException)
+                {
+                    retryCount++;
+                    if (retryCount >= maxRetries)
+                    {
+                        hasNextPage = false; // Stop trying after maxRetries
+                    }
+                    else
+                    {
+                        // Optionally, log the retry attempt
+                        Console.WriteLine($"Retry attempt {retryCount}...");
+                        Thread.Sleep(2000); // Wait before retrying
+                    }
+                }
             }
 
             ICsvExporter csvExporter = new CSVHelper();
             csvExporter.ExportToCsv("output.csv", items);
         }
+
+        //private void ScrapInfoOnImmovelTable()
+        //{
+        //    var items = AllParameters();
+
+        //    _driver.Navigate().GoToUrl("https://app.imo360crm.pt/listagem/imoveis"); Thread.Sleep(1000);
+
+        //    var homesTable = _driver.FindElement(By.XPath("//*[@id=\"customtable\"]/div/div[2]/div")).FindElement(By.TagName("tbody"));
+        //    var rows = homesTable.FindElements(By.TagName("tr"));
+
+        //    foreach (var row in rows)
+        //    {
+        //        var webElement = row.FindElement(By.XPath("./td[1]/a"));
+        //        var url = webElement.GetAttribute("href");
+        //        var reference = webElement.GetAttribute("text");
+
+        //        items.Add(new string[] { url, reference });
+        //    }
+
+        //    ICsvExporter csvExporter = new CSVHelper();
+        //    csvExporter.ExportToCsv("output.csv", items);
+        //}
 
         private static List<string[]> AllParameters()
         {

@@ -1,4 +1,4 @@
-﻿namespace CRMScrap.Services
+﻿namespace CRMScrap.Services.CSV
 {
     public interface ICsvExporter
     {
