@@ -7,6 +7,8 @@ public class RealEstateProperties
     public string Nature { get; set; }
     public string Condition { get; set; }
     public string Typologi { get; set; }
+    public string WC { get; set; }
+    public string Garage { get; set; }
     public string EnergiCertification { get; set; }
     public string YearConstraction { get; set; }
     public string Business { get; set; }
@@ -31,5 +33,4 @@ public class RealEstateProperties
     public string Town { get; set; }
     public string Neighborhood { get; set; }
     public string Description { get; set; }
-    private readonly FeaturesRealEstate _featuresRealEstate = new FeaturesRealEstate();
 }
