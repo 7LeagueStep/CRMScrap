@@ -4,6 +4,8 @@ public class RealEstateProperties
 {
     public int Id { get; set; }
     public string Reference { get; set; }
+    public string Url { get; set; }
+    public string ExternalId { get; set; }
     public string Nature { get; set; }
     public string Condition { get; set; }
     public string Typologi { get; set; }
@@ -32,5 +34,6 @@ public class RealEstateProperties
     public string State { get; set; }
     public string Town { get; set; }
     public string Neighborhood { get; set; }
+    public string Title { get; set; }
     public string Description { get; set; }
 }
